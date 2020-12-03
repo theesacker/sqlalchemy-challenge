@@ -29,8 +29,6 @@ def home():
         /api/v1.0/precipitation
         /api/v1.0/stations
         /api/v1.0/tobs
-        /api/v1.0/<start>
-        /api/v1.0/<start>/<end>
     )
 
 @app.route("/api/v1.0/precipitation")
@@ -58,6 +56,18 @@ def w_station:
 
     #Convert station list to normal list
     station_list = list(np.ravel(results))
+    return jsonify(station_list)
 
+@app.route("/api/v1.0/tobs")
+def tobs:
+    session = Session(engine)
 
+    #Query tobs
+    session.query(Measurement.station,Measurement.tobs).\
+    filter(Measurement.date > dt.date(2016, 8, 22)).\
+    filter(Measurement.station =="USC00519281").all()
 
+    session.close()
+
+    tob_list = list(np.ravel(results))
+    return jsonify(tob_list)
